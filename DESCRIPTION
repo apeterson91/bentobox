@@ -1,0 +1,15 @@
+Package: bentobox
+Type: Package
+Title: Built Envionment Network objects Modeling Toolbox 
+Version: 0.1.0
+Authors@R: person(given = "Adam", 
+				  family = "Peterson", 
+				  email ="atpvyc@umich.edu", 
+				  role = c("aut", "cre"),
+				  comment = c(ORCID = 0000-0001-7071-7873))
+BugReports: https://github.com/apeterson91/bentobox/issues
+Description: bentobox provides a complete toolbox of data structures and modeling strategies for working with and analyzing built environment data.
+License: GPL-3
+RoxygenNote: 7.1.1
+Encoding: UTF-8
+LazyData: true
