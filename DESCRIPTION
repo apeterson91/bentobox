@@ -8,8 +8,30 @@ Authors@R: person(given = "Adam",
 				  role = c("aut", "cre"),
 				  comment = c(ORCID = 0000-0001-7071-7873))
 BugReports: https://github.com/apeterson91/bentobox/issues
-Description: bentobox provides a complete toolbox of data structures and modeling strategies for working with and analyzing built environment data.
+Description: bentobox provides a toolbox of data structures and modeling strategies for working with and analyzing built environment data.
 License: GPL-3
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    rsstap (>= 0.1.2),
+    bendr (>= 1.0.2),
+    rstapDP (>= 0.1.1),
+    rbenvo (>= 1.0.3),
+    glue,
+    cli,
+    crayon,
+    utils,
+    rstudioapi,
+    magrittr,
+    purrr
+Remotes: 
+    apeterson91/rsstap,
+    apeterson91/bendr,
+    apeterson91/rstapDP,
+    apeterson91/rbenvo
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

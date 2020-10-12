@@ -1,0 +1,92 @@
+---
+title: "Opening the bentobox"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Opening the bentobox}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Motivation
+The `bentobox` package ecosystem contains four packages that facilitate working with and modeling built environment(BE) data:
+
+* `rbenvo` A suite of objects and tools for working with the relational subject - BE data.
+* `rsstap`: A package for modeling the population level effect of BE features (BEFs) on subjects: $E[g(\mu_i)] = X_i^{T}\delta + f(BEF)$
+* `bendr`: A package for estimating clusters of spatial distributions of a BEF around subjects $f(d) = \int \mathcal{K}(d|\theta)dG(\theta)$.
+* `rstapDP`: A package for modeling the cluster level effects of BEFS on subjects: $E[g(\mu_i)] = X_i^{T}\delta + f_i(BEF)$
+
+The intent of packaging this software together is so that it may provide an "all-in-one" approach for those wishing to perform analysis on BEFs. In this vignette we'll briefly show how the functions from these packages support one another and offer different methods of analyzing the environments in which we live.
+
+
+# Demonstration
+
+We'll begin this demonstration by first loading `bentobox` which will, akin to the tidyverse, print out a message of which packages have been loaded, and any overlapping(or conflicting) functions which will be masked.
+```{r setup}
+library(bentobox)
+```
+
+For this vignette we'll use the California school obesity and Fast Food Restaurant (FFR) data, which have code to illustrate how they were downloaded and packaged [here](https://github.com/apeterson91/rbenvo/blob/master/data-raw/CA.R). We can create this dataset using 
+the simple ``create_CA_benvo()`` command from ``rbenvo``.
+
+```{r convert_demo}
+bdf <- create_CA_benvo()
+```
+
+Using the ``active`` API paradigm, popularized in the [tidygraph](https://github.com/thomasp85/tidygraph) package,
+we can take a look at the current active BEF, which contains the pairwise school-FFR distances.
+
+```{r}
+bdf
+```
+In a similar manner, we can look at the relevant subject and bef data.
+
+```{r,subject_view}
+bdf %>% activate(subject)
+```
+
+```{r bef_view}
+bdf %>% activate(bef_FFR)
+```
+### Visualize
+If we'd like to visualize these data, one easy method would be to use the `plot_map` method available from `rbenvo`, for those `benvo's` that have `sf` information available, as we do here.
+
+```{r map, cache=TRUE}
+plot(bdf,'map') + ggplot2::theme_bw() + ggplot2::theme_void() 
+```
+This spatial visulization shows that most of the subjects (schools in our case) are clustered iwthin the interior of Los Angeles, as one might expect. However, we have FFRs both within and far away from L.A, though notably not very far east of the city. This could lead
+to an unintended [edge effect](https://en.wikipedia.org/wiki/Edge_effects). We'll ignore this here, since we're only interested in 
+showing and modeling these data for illustrative purposes, but this would be of greater concern in an analysis intended to be more authoritative.
+
+## Model
+
+The first model we can fit to these data is the spatial aggregated predictor model, available via `rsstap`, which takes the following form for our data:
+$$
+\text{logit}(P(\text{obesity}|b_i)) = \mathbf{X}_i^T\mathbf{\delta} + f(FFR_i) + b_i\\
+f(FFR_i) = \sum_{d \in \mathcal{D}}\sum_{l=1}^{10}\beta_l\phi_l(d)\\
+b_i \sim N(0,\sigma^2_b).
+$$
+
+This model can be fit via the following R code.
+```{r,results='hide'}
+fit <- sstap_glmer(cbind(NoStud_OverweightObese,NoStud_NotOverweightObese) ~ Charter + Grade + sap(FFR) + (1|cdscode),
+                   benvo=bdf,
+                   family=binomial())
+```
+
+Similarly, the primary effect of interest - the FFR effect, can be plotted using `plot`.
+```{r}
+plot(fit)
+```
+ 
+While this is not intended to be an authoritative result, as stated previously, the positive association between FFR exposure and childhood obesity is, at least, in line with what one might expect.
+
+We could take this modeling strategy further, by estimating clusters of spatial distributions in FFR occurrence around schools via [`bendr`](https://apeterson91.github.io/bendr/), or identify clusters of FFR effects via [`rstapDP`](http://apeterson91.github.io/rstapDP), however, we'll end this vignette here, leaving the links to those packages as a more in-depth resource for those interested in how those models are formulated.
+
+The take-home message of this vignette is that by combining the custom modeling strategies of `rsstap`,`bendr` and `rstapDP` along with the intuitive tidygraph-like data structure available in `rbenvo`, the `bentobox` ecosystem offers those interested in studying the built environment a fundamental set of tools with which to analyze built environment data.
