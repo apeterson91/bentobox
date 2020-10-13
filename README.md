@@ -9,10 +9,10 @@ provide a wide range of data structures and modeling techniques for those
 working with built environment data. 
 The `bentobox` contains the following packages
 
-* `rbenvo` for creating and working with subject - built environment relational data.
-* `rsstap` for estimating population level effects of built environment exposure on pertinent health outcomes.
-* `bendr` for estimating clusters of spatial distributions between subjects and point pattern built environment features. 
-* `rstapDP` for estimating heterogeneous - cluster level effects of built environment exposure on pertinent health outcomes.
+* [`rbenvo`](https://apeterson91.github.io/rbenvo/) for creating and working with subject - built environment relational data.
+* [`rsstap`](https://apeterson91.github.io/rsstap/) for estimating population level effects of built environment exposure on pertinent health outcomes.
+* [`bendr`](https://apeterson91.github.io/bendr) for estimating clusters of spatial distributions between subjects and point pattern built environment features. 
+* [`rstapDP`](https://apeterson91.github.io/rstapDP) for estimating heterogeneous - cluster level effects of built environment exposure on pertinent health outcomes.
 
 
 ## Installation
